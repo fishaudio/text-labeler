@@ -142,6 +142,7 @@ const AudioLabeler = ({
             fullWidth
             rows={4}
             value={pinYin}
+            onChange={(e) => setPinYin(e.target.value)}
             disabled={disabled}
           />
         </Stack>
