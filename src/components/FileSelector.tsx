@@ -103,11 +103,12 @@ const FileSelector = ({
           ? `已完成 ${numLabeled} / ${files.length}`
           : "未选择文件"}
 
-        <List>
+        <List sx={{ maxHeight: 400, overflow: "auto" }}>
           {files.map((file, index) => (
             <ListItem disablePadding key={index}>
               <ListItemButton
                 selected={selected === file}
+                autoFocus={selected === file}
                 onClick={() => setSelected(file)}
               >
                 <ListItemIcon>
