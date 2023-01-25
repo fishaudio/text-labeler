@@ -101,7 +101,7 @@ export default function Home() {
                 </IconButton>
               </Header>
             </Grid>
-            <Grid xs={4}>
+            <Grid xs={12} md={4}>
               <FileSelector
                 files={files}
                 setFiles={setFiles}
@@ -109,7 +109,7 @@ export default function Home() {
                 setSelected={onSelectedAudio}
               />
             </Grid>
-            <Grid xs={8}>
+            <Grid xs={12} md={8}>
               <AudioLabeler
                 audio={audio}
                 pinYin={pinYin}
