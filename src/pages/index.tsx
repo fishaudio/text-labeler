@@ -4,7 +4,7 @@ import { Container, IconButton, Paper, styled } from "@mui/material";
 import FileSelector, { LabeledFile } from "@/components/FileSelector";
 import { useState } from "react";
 import AudioLabeler from "@/components/AudioLabeler";
-import GitHubIcon from '@mui/icons-material/GitHub';
+import GitHubIcon from "@mui/icons-material/GitHub";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
   return new Promise((resolve, reject) => {
@@ -96,7 +96,7 @@ export default function Home() {
             <Grid xs={12}>
               <Header>
                 Fish Audio Labeler
-                <IconButton sx={{color: "#000"}} onClick={openRepo}>
+                <IconButton sx={{ color: "#000" }} onClick={openRepo}>
                   <GitHubIcon />
                 </IconButton>
               </Header>
