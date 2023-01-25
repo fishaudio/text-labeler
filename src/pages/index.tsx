@@ -1,9 +1,10 @@
 import Head from "next/head";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Container, Paper, styled } from "@mui/material";
+import { Container, IconButton, Paper, styled } from "@mui/material";
 import FileSelector, { LabeledFile } from "@/components/FileSelector";
 import { useState } from "react";
 import AudioLabeler from "@/components/AudioLabeler";
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
   return new Promise((resolve, reject) => {
@@ -18,6 +19,10 @@ const Header = styled(Paper)(({ theme }) => ({
   padding: theme.spacing(1),
   ...theme.typography.h5,
   textAlign: "center",
+  alignContent: "center",
+  alignItems: "center",
+  display: "flex",
+  justifyContent: "center",
 }));
 
 export default function Home() {
@@ -73,6 +78,10 @@ export default function Home() {
     setFiles([...files]);
   };
 
+  const openRepo = () => {
+    window.open("https://github.com/fishaudio/text-labeler", "_blank");
+  };
+
   return (
     <>
       <Head>
@@ -85,7 +94,12 @@ export default function Home() {
         <Container>
           <Grid container spacing={2}>
             <Grid xs={12}>
-              <Header>Fish Audio Labeler</Header>
+              <Header>
+                Fish Audio Labeler
+                <IconButton sx={{color: "#000"}} onClick={openRepo}>
+                  <GitHubIcon />
+                </IconButton>
+              </Header>
             </Grid>
             <Grid xs={4}>
               <FileSelector
