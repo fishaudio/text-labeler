@@ -16,6 +16,7 @@ export type LabeledFile = {
   labeled: boolean;
   file: File;
   labelFileName: string;
+  text?: string;
   pinYin?: string;
   directoryHandle: FileSystemDirectoryHandle;
 };
@@ -60,6 +61,7 @@ const FileSelector = ({
 
       const file: File = await handle.getFile();
       let labeled = false;
+      let text = "";
       let pinYin = "";
 
       const parts = handle.name.split(".");
@@ -67,23 +69,29 @@ const FileSelector = ({
       const labelFileName = `${nameWithoutExt}.lab`;
 
       try {
-        const file = await directoryHandle.getFileHandle(labelFileName);
+        const file: FileSystemFileHandle = await directoryHandle.getFileHandle(labelFileName);
         const labelFile = await file.getFile();
-        const text = await labelFile.text();
+        const annotated = await labelFile.text();
+
+        // Split by line breaks, first line is the text, second line is the pinyin
+        [text, pinYin] = annotated.split("\n");
 
         labeled = true;
-        pinYin = text;
       } catch (e) {}
 
       temp.push({
         name: handle.name,
         labeled,
+        text,
         pinYin,
         file,
         labelFileName,
         directoryHandle,
       });
     }
+
+    // Sort by name
+    temp.sort((a, b) => a.name.localeCompare(b.name));
 
     setFiles(temp);
     setSelected(temp[0]);

@@ -14,10 +14,13 @@ import pinyin from "pinyin";
 
 type AudioLabelerProps = {
   audio: string;
+  text: string;
   pinYin: string;
   onPrev: () => void;
   onNext: () => void;
   onSave: () => void;
+  onDelete: () => void;
+  setText: (text: string) => void;
   setPinYin: (pinYin: string) => void;
 };
 
@@ -35,14 +38,15 @@ const AudioLabeler = ({
   onPrev,
   onNext,
   onSave,
+  onDelete,
+  text,
+  setText,
   pinYin,
   setPinYin,
 }: AudioLabelerProps) => {
   const [autoPlay, setAutoPlay] = useState(true);
   const [autoPinYin, setAutoPinYin] = useState(true);
   const [autoNext, setAutoNext] = useState(true);
-
-  const [text, setText] = useState("");
 
   useEffect(() => {
     const handleKeyPress = (event: any) => {
@@ -71,10 +75,6 @@ const AudioLabeler = ({
       document.removeEventListener("keydown", handleKeyPress);
     };
   }, [pinYin, autoNext, onSave, onNext]);
-
-  useEffect(() => {
-    setText("");
-  }, [audio]);
 
   useEffect(() => {
     setAutoNext(getBooleanFromLocalStorage("autoNext", true));
@@ -180,7 +180,10 @@ const AudioLabeler = ({
             下一个 {autoNext ? "(Enter)" : ""}
           </Button>
           <Button variant="outlined" fullWidth onClick={onSave}>
-            保存 (Command / Ctrl + S)
+            保存 (Ctrl + S)
+          </Button>
+          <Button variant="outlined" fullWidth onClick={onDelete} color="error">
+            删除
           </Button>
         </Stack>
       </PaperWithPadding>

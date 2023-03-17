@@ -29,11 +29,13 @@ export default function Home() {
   const [files, setFiles] = useState<LabeledFile[]>([]);
   const [selected, setSelected] = useState<LabeledFile | null>(null);
   const [audio, setAudio] = useState<string>("");
+  const [text, setText] = useState<string>("");
   const [pinYin, setPinYin] = useState<string>("");
 
   const onSelectedAudio = async (file: LabeledFile) => {
     const base64 = await getBase64(file.file);
     setAudio(base64 as string);
+    setText(file.text || "");
     setPinYin(file.pinYin || "");
 
     setSelected(file);
@@ -64,6 +66,7 @@ export default function Home() {
       return;
     }
 
+    selected.text = text;
     selected.pinYin = pinYin;
     selected.labeled = true;
 
@@ -72,10 +75,42 @@ export default function Home() {
       { create: true }
     );
     const writable = await fileHandle.createWritable();
-    await writable.write(pinYin);
+    await writable.write(`${text}\n${pinYin}`);
     await writable.close();
 
     setFiles([...files]);
+  };
+
+  const onDelete = async () => {
+    if (!selected) {
+      return;
+    }
+
+    try {
+      await selected.directoryHandle.removeEntry(selected.file.name);
+
+      try {
+        const handle = await selected.directoryHandle.getFileHandle(
+          selected.labelFileName
+        );
+
+        await selected.directoryHandle.removeEntry(selected.labelFileName);
+      } catch {}
+
+      // remove from list
+      const index = files.findIndex((f) => f.name === selected.name);
+      files.splice(index, 1);
+      setFiles([...files]);
+
+      // select next
+      if (index < files.length) {
+        onSelectedAudio(files[index]);
+      }
+    } catch (e) {
+      console.error("删除失败", e);
+      alert("删除失败");
+      return;
+    }
   };
 
   const openRepo = () => {
@@ -112,10 +147,13 @@ export default function Home() {
             <Grid xs={12} md={8}>
               <AudioLabeler
                 audio={audio}
+                text={text}
                 pinYin={pinYin}
                 onPrev={onPrev}
                 onNext={onNext}
                 onSave={onSave}
+                onDelete={onDelete}
+                setText={setText}
                 setPinYin={setPinYin}
               />
             </Grid>
