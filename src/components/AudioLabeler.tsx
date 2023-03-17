@@ -16,12 +16,10 @@ type AudioLabelerProps = {
   audio: string;
   text: string;
   pinYin: string;
-  onPrev: () => void;
-  onNext: () => void;
-  onSave: () => void;
+  onPrev: (text: string, pinYin: string) => void;
+  onNext: (text: string, pinYin: string) => void;
+  onSave: (text: string, pinYin: string) => void;
   onDelete: () => void;
-  setText: (text: string) => void;
-  setPinYin: (pinYin: string) => void;
 };
 
 const getBooleanFromLocalStorage = (key: string, defaultValue: boolean) => {
@@ -40,19 +38,24 @@ const AudioLabeler = ({
   onSave,
   onDelete,
   text,
-  setText,
   pinYin,
-  setPinYin,
 }: AudioLabelerProps) => {
   const [autoPlay, setAutoPlay] = useState(true);
   const [autoPinYin, setAutoPinYin] = useState(true);
   const [autoNext, setAutoNext] = useState(true);
+  const [tempText, setTempText] = useState(text);
+  const [tempPinYin, setTempPinYin] = useState(pinYin);
+
+  useEffect(() => {
+    setTempText(text);
+    setTempPinYin(pinYin);
+  }, [text, pinYin]);
 
   useEffect(() => {
     const handleKeyPress = (event: any) => {
-      if (autoNext && event.keyCode === 13 && !!pinYin) {
+      if (autoNext && event.keyCode === 13 && !!tempPinYin) {
         event.preventDefault();
-        onNext();
+        onNext(tempText, tempPinYin);
       }
 
       // Ignore Enter
@@ -63,7 +66,7 @@ const AudioLabeler = ({
       // If Command + S is pressed
       if (event.keyCode === 83 && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
-        onSave();
+        onSave(tempText, tempPinYin);
       }
     };
 
@@ -74,7 +77,7 @@ const AudioLabeler = ({
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [pinYin, autoNext, onSave, onNext]);
+  }, [tempPinYin, autoNext, onSave, onNext]);
 
   useEffect(() => {
     setAutoNext(getBooleanFromLocalStorage("autoNext", true));
@@ -104,14 +107,14 @@ const AudioLabeler = ({
   };
 
   const onUpdateText = (e: any) => {
-    setText(e.target.value);
+    setTempText(e.target.value);
 
     if (autoPinYin) {
       const pinyinResult = pinyin(e.target.value, {
         style: pinyin.STYLE_NORMAL,
       });
 
-      setPinYin(pinyinResult.map((item) => item[0]).join(" "));
+      setTempPinYin(pinyinResult.map((item) => item[0]).join(" "));
     }
   };
 
@@ -156,7 +159,7 @@ const AudioLabeler = ({
             fullWidth
             rows={2}
             onChange={onUpdateText}
-            value={text}
+            value={tempText}
             disabled={disabled}
           />
 
@@ -165,21 +168,33 @@ const AudioLabeler = ({
             multiline
             fullWidth
             rows={4}
-            value={pinYin}
-            onChange={(e) => setPinYin(e.target.value)}
+            value={tempPinYin}
+            onChange={(e) => setTempPinYin(e.target.value)}
             disabled={disabled}
           />
         </Stack>
       </PaperWithPadding>
       <PaperWithPadding>
         <Stack spacing={2} direction="row">
-          <Button variant="outlined" fullWidth onClick={onPrev}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => onPrev(tempText, tempPinYin)}
+          >
             上一个
           </Button>
-          <Button variant="outlined" fullWidth onClick={onNext}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => onNext(tempText, tempPinYin)}
+          >
             下一个 {autoNext ? "(Enter)" : ""}
           </Button>
-          <Button variant="outlined" fullWidth onClick={onSave}>
+          <Button
+            variant="outlined"
+            fullWidth
+            onClick={() => onSave(tempText, tempPinYin)}
+          >
             保存 (Ctrl + S)
           </Button>
           <Button variant="outlined" fullWidth onClick={onDelete} color="error">

@@ -29,20 +29,16 @@ export default function Home() {
   const [files, setFiles] = useState<LabeledFile[]>([]);
   const [selected, setSelected] = useState<LabeledFile | null>(null);
   const [audio, setAudio] = useState<string>("");
-  const [text, setText] = useState<string>("");
-  const [pinYin, setPinYin] = useState<string>("");
 
   const onSelectedAudio = async (file: LabeledFile) => {
     const base64 = await getBase64(file.file);
     setAudio(base64 as string);
-    setText(file.text || "");
-    setPinYin(file.pinYin || "");
 
     setSelected(file);
   };
 
-  const onPrev = async () => {
-    await onSave();
+  const onPrev = async (text: string, pinYin: string) => {
+    await onSave(text, pinYin);
 
     const index = files.findIndex((f) => f.name === selected?.name);
 
@@ -51,8 +47,8 @@ export default function Home() {
     }
   };
 
-  const onNext = async () => {
-    await onSave();
+  const onNext = async (text: string, pinYin: string) => {
+    await onSave(text, pinYin);
 
     const index = files.findIndex((f) => f.name === selected?.name);
 
@@ -61,7 +57,7 @@ export default function Home() {
     }
   };
 
-  const onSave = async () => {
+  const onSave = async (text: string, pinYin: string) => {
     if (!selected) {
       return;
     }
@@ -143,14 +139,12 @@ export default function Home() {
             <Grid xs={12} md={8}>
               <AudioLabeler
                 audio={audio}
-                text={text}
-                pinYin={pinYin}
+                text={selected?.text || ""}
+                pinYin={selected?.pinYin || ""}
                 onPrev={onPrev}
                 onNext={onNext}
                 onSave={onSave}
                 onDelete={onDelete}
-                setText={setText}
-                setPinYin={setPinYin}
               />
             </Grid>
           </Grid>
