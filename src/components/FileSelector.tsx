@@ -69,7 +69,9 @@ const FileSelector = ({
       const labelFileName = `${nameWithoutExt}.lab`;
 
       try {
-        const file: FileSystemFileHandle = await directoryHandle.getFileHandle(labelFileName);
+        const file: FileSystemFileHandle = await directoryHandle.getFileHandle(
+          labelFileName
+        );
         const labelFile = await file.getFile();
         const annotated = await labelFile.text();
 
