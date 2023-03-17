@@ -90,10 +90,6 @@ export default function Home() {
       await selected.directoryHandle.removeEntry(selected.file.name);
 
       try {
-        const handle = await selected.directoryHandle.getFileHandle(
-          selected.labelFileName
-        );
-
         await selected.directoryHandle.removeEntry(selected.labelFileName);
       } catch {}
 
