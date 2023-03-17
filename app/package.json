@@ -19,5 +19,8 @@
             "node18-linux-x64"
         ],
         "outputPath": "dist"
+    },
+    "devDependencies": {
+        "pkg": "^5.8.1"
     }
 }
