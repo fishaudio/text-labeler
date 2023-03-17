@@ -15,7 +15,7 @@ jobs:
           node-version: 18
           cache: 'npm'
       - name: Build Next.js
-        run: npm i && npm run build && npm run export
+        run: yarn && yarn build && yarn export
       - name: Build app
         run: cd app && npm i && npm run build
       - name: Upload build
