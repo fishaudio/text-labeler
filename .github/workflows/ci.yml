@@ -28,8 +28,8 @@ jobs:
       - name: Upload Windows artifact
         uses: actions/upload-artifact@v3
         with:
-          name: asr-label-win32-x64.zip
-          path: app/dist/asr-label-win32-x64.exe
+          name: asr-label-win-x64.zip
+          path: app/dist/asr-label-win-x64.exe
 
       - name: Upload Linux artifact
         uses: actions/upload-artifact@v3
