@@ -6,11 +6,6 @@
 ## 本地运行
 在 [Actions](https://github.com/fishaudio/text-labeler/actions/workflows/ci.yml) 中可以找到最新的构建产物, 下载并解压后, 直接运行会自动打开浏览器.
 
-当前构建支持的系统, 如需其他系统请自行构建:
-- node18-macos-arm64
-- node18-win-x64
-- node18-linux-x64
-
 ## 本地开发
 
 ```bash

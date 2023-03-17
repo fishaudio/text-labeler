@@ -14,25 +14,39 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+      - name: Setup GO
+        uses: actions/setup-go@v4
       - name: Build Next.js
         run: yarn && yarn build && yarn export
       - name: Build app
-        run: cd app && npm i && npm run build
+        run: |
+          cd app
+          cp -rf ../out .
+          GOOS=linux GOARCH=amd64 go build -o dist/asr-label-linux-x64 main.go
+          GOOS=windows GOARCH=amd64 go build -o dist/asr-label-win-x64.exe main.go
+          GOOS=darwin GOARCH=amd64 go build -o dist/asr-label-macos-x64 main.go
+          GOOS=darwin GOARCH=arm64 go build -o dist/asr-label-macos-arm64 main.go
 
-      - name: Upload MacOS artifact
+      - name: Upload linux artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: asr-label-linux-x64.zip
+          path: app/dist/asr-label-linux-x64
+
+      - name: Upload macos artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: asr-label-macos-x64.zip
+          path: app/dist/asr-label-macos-x64
+
+      - name: Upload macos arm64 artifact
         uses: actions/upload-artifact@v3
         with:
           name: asr-label-macos-arm64.zip
           path: app/dist/asr-label-macos-arm64
 
-      - name: Upload Windows artifact
+      - name: Upload windows artifact
         uses: actions/upload-artifact@v3
         with:
           name: asr-label-win-x64.zip
           path: app/dist/asr-label-win-x64.exe
-
-      - name: Upload Linux artifact
-        uses: actions/upload-artifact@v3
-        with:
-          name: asr-label-linux-x64.zip
-          path: app/dist/asr-label-linux-x64
