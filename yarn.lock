@@ -544,6 +544,11 @@
   dependencies:
     tslib "^2.4.0"
 
+"@types/colormap@^2.3.1":
+  version "2.3.1"
+  resolved "https://registry.yarnpkg.com/@types/colormap/-/colormap-2.3.1.tgz#2b1d63f58ba541b81b99ad0b743cece7c0ff5f67"
+  integrity sha512-GCPa0VCih4kp/TPPkjdjgUG19yCOPbpP9UpjEYTxUnIhaNqMrhlL9wSAyxm0cRfSubT3KUETZ+8vXYn6fmq0OQ==
+
 "@types/json5@^0.0.29":
   version "0.0.29"
   resolved "https://registry.npmjs.org/@types/json5/-/json5-0.0.29.tgz"
@@ -913,6 +918,13 @@ color-support@^1.1.2:
   version "1.1.3"
   resolved "https://registry.npmjs.org/color-support/-/color-support-1.1.3.tgz"
   integrity sha512-qiBjkpbMLO/HL68y+lh4q0/O1MZFj2RX6X/KmMa3+gJD3z+WwI1ZzDHysvqHGS3mP6mznPckpXmw1nI9cJjyRg==
+
+colormap@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/colormap/-/colormap-2.3.2.tgz#4422c1178ce563806e265b96782737be85815abf"
+  integrity sha512-jDOjaoEEmA9AgA11B/jCSAvYE95r3wRoAyTf3LEHGiUVlNHJaL1mRkf5AyLSpQBVGfTEPwGEqCIzL+kgr2WgNA==
+  dependencies:
+    lerp "^1.0.3"
 
 commander@~1.1.1:
   version "1.1.1"
@@ -2025,6 +2037,11 @@ language-tags@=1.0.5:
   integrity sha512-qJhlO9cGXi6hBGKoxEG/sKZDAHD5Hnu9Hs4WbOY3pCWXDhw0N8x1NenNzm2EnNLkLkk7J2SdxAkDSbb6ftT+UQ==
   dependencies:
     language-subtag-registry "~0.3.2"
+
+lerp@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/lerp/-/lerp-1.0.3.tgz#a18c8968f917896de15ccfcc28d55a6b731e776e"
+  integrity sha512-70Rh4rCkJDvwWiTsyZ1HmJGvnyfFah4m6iTux29XmasRiZPDBpT9Cfa4ai73+uLZxnlKruUS62jj2lb11wURiA==
 
 levn@^0.4.1:
   version "0.4.1"
