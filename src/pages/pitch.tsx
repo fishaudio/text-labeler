@@ -1,9 +1,21 @@
 import Head from "next/head";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Container, IconButton, Paper, styled } from "@mui/material";
+import {
+  Container,
+  IconButton,
+  Paper,
+  styled,
+  Button,
+  ButtonGroup,
+  Divider,
+} from "@mui/material";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import ZoomInIcon from "@mui/icons-material/ZoomIn";
+import ZoomOutIcon from "@mui/icons-material/ZoomOut";
+import SelectIcon from "@mui/icons-material/SelectAll";
+import DrawIcon from "@mui/icons-material/Edit";
+import UploadIcon from "@mui/icons-material/Upload";
 import { useCallback, useEffect, useRef, useState } from "react";
-import data from "./data.json";
 import { drawMel, drawPitches, melToF } from "@/components/MelSpec";
 
 const Header = styled(Paper)(({ theme }) => ({
@@ -21,19 +33,50 @@ export default function PitchEditor() {
   const [mode, setMode] = useState<"select" | "draw">("draw");
   const [mouseDown, setMouseDown] = useState(false);
   const [scale, setScale] = useState(1);
-  const [mel, setMel] = useState<number[][]>((data as any).mel);
-  const [pitches, setPitches] = useState<{ [key: string]: number[] }>(
-    (data as any).pitches
-  );
+  const [mel, setMel] = useState<number[][]>();
+  const [pitches, setPitches] = useState<{ [key: string]: number[] }>();
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const melCanvas = useRef<HTMLCanvasElement>(null);
+
+  // All references to other mels
+  const melRefs = useRef<{
+    [key: string]: HTMLCanvasElement | null;
+  }>({});
 
   const openRepo = () => {
     window.open("https://github.com/fishaudio/text-labeler", "_blank");
   };
 
+  const onFileSelected = (e: any) => {
+    const file = (e.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const data = JSON.parse(e.target?.result as string);
+      setMel(data.mel);
+      setPitches(data.pitches);
+
+      // Generate mel refs
+      let refs: {
+        [key: string]: null;
+      } = {};
+
+      for (const key in data.pitches) {
+        if (key === "final") {
+          continue;
+        }
+
+        refs[key] = null;
+      }
+
+      melRefs.current = refs;
+    };
+    reader.readAsText(file);
+  };
+
   useEffect(() => {
-    if (!melCanvas.current) return;
+    if (!melCanvas.current || !mel) return;
 
     const start = performance.now();
     drawMel(melCanvas.current, mel);
@@ -41,7 +84,7 @@ export default function PitchEditor() {
   }, [melCanvas, mel, scale]);
 
   useEffect(() => {
-    if (!canvas.current || !melCanvas.current) return;
+    if (!canvas.current || !melCanvas.current || !pitches) return;
 
     const start = performance.now();
     // Draw the mel canvas
@@ -57,6 +100,22 @@ export default function PitchEditor() {
     drawPitches(canvas.current, pitches["final"]);
     console.log(`Drawn pitches in ${performance.now() - start}ms`);
   }, [canvas, melCanvas, pitches, scale]);
+
+  // Draw all melRefs
+  useEffect(() => {
+    if (!melCanvas.current || !mel || !pitches) return;
+    for (const i in melRefs.current) {
+      const melRef = melRefs.current[i];
+      if (!melRef) continue;
+
+      const start = performance.now();
+      melRef
+        .getContext("2d")
+        ?.drawImage(melCanvas.current, 0, 0, melRef.width, melRef.height);
+      drawPitches(melRef, pitches[i] || []);
+      console.log(`Drawn mel ref ${i} in ${performance.now() - start}ms`);
+    }
+  }, [melCanvas, mel, pitches, scale]);
 
   const updatePitches = useCallback(
     (x: number, y: number) => {
@@ -94,7 +153,9 @@ export default function PitchEditor() {
   const onMouseMove = (e: React.MouseEvent<HTMLCanvasElement, MouseEvent>) => {
     if (!canvas.current || !mouseDown) return;
 
-    updatePitches(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    if (mode === "draw") {
+      updatePitches(e.nativeEvent.offsetX, e.nativeEvent.offsetY);
+    }
   };
 
   return (
@@ -116,61 +177,95 @@ export default function PitchEditor() {
                 </IconButton>
               </Header>
             </Grid>
-            <Grid xs={12} md={12}>
-              <div>
-                <button onClick={() => setScale((prevScale) => prevScale * 2)}>
-                  Zoom In
-                </button>
-                <button onClick={() => setScale((prevScale) => prevScale / 2)}>
-                  Zoom Out
-                </button>
+            <Grid
+              xs={12}
+              md={12}
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+              }}
+            >
+              <ButtonGroup variant="outlined" color="primary">
+                {/* Select file */}
+                <Button component="label" startIcon={<UploadIcon />}>
+                  Select
+                  <input
+                    hidden
+                    type="file"
+                    accept=".json"
+                    onChange={onFileSelected}
+                  />
+                </Button>
+              </ButtonGroup>
+              <ButtonGroup variant="outlined" color="primary">
+                {/* Zoom */}
+                <Button onClick={() => setScale((prevScale) => prevScale * 2)}>
+                  <ZoomInIcon />
+                </Button>
+                <Button onClick={() => setScale((prevScale) => prevScale / 2)}>
+                  <ZoomOutIcon />
+                </Button>
                 {/* Selection */}
-                <button
+                <Button
                   onClick={() => {
                     setMode("select");
                   }}
                   disabled={mode === "select"}
                 >
-                  Select
-                </button>
+                  <SelectIcon />
+                </Button>
                 {/* Drawing */}
-                <button
+                <Button
                   onClick={() => {
                     setMode("draw");
                   }}
                   disabled={mode === "draw"}
                 >
-                  Draw
-                </button>
-              </div>
+                  <DrawIcon />
+                </Button>
+              </ButtonGroup>
             </Grid>
-            <Grid
-              xs={12}
-              md={12}
-              sx={{
-                overflow: "auto",
-                border: "1px solid #000",
-              }}
-            >
-              <canvas
-                ref={canvas}
-                width={mel[0].length * scale}
-                height={256}
-                onMouseDown={() => {
-                  setMouseDown(true);
+            <Grid xs={12} md={12}>
+              <div
+                style={{
+                  overflow: "auto",
+                  border: "1px solid #000",
                 }}
-                onMouseUp={() => {
-                  setMouseDown(false);
-                  setPrevIndex(null);
-                }}
-                onMouseMove={(e) => onMouseMove(e)}
-              />
-              <canvas
-                ref={melCanvas}
-                width={mel[0].length * scale}
-                height={512}
-                hidden
-              />
+              >
+                {/* Mel canvas */}
+                Output
+                <canvas
+                  ref={canvas}
+                  width={mel ? mel[0].length * scale : 100}
+                  height={256}
+                  onMouseDown={() => {
+                    setMouseDown(true);
+                  }}
+                  onMouseUp={() => {
+                    setMouseDown(false);
+                    setPrevIndex(null);
+                  }}
+                  onMouseMove={(e) => onMouseMove(e)}
+                />
+                <canvas
+                  ref={melCanvas}
+                  width={mel ? mel[0].length * scale : 100}
+                  height={256}
+                  hidden
+                />
+                {/* Add other mels */}
+                {Object.entries(melRefs.current).map((kv, i) => (
+                  <>
+                    {kv[0]}
+                    <canvas
+                      key={i}
+                      ref={(ref) => (melRefs.current[kv[0]] = ref!)}
+                      width={mel ? mel[0].length * scale : 100}
+                      height={256}
+                    />
+                  </>
+                ))}
+              </div>
             </Grid>
           </Grid>
         </Container>
