@@ -76,6 +76,18 @@ const fToMel = (
   return ((hzToMel(f) - melMin) / (melMax - melMin)) * nMels;
 };
 
+export const melToF = (
+  mel: number,
+  fMin: number = 40,
+  fMax: number = 16000,
+  nMels: number = 128
+): number => {
+  const melMin = hzToMel(fMin);
+  const melMax = hzToMel(fMax);
+
+  return melToHz(melMin + (mel / nMels) * (melMax - melMin));
+};
+
 const melFreqs = (
   fMin: number = 40,
   fMax: number = 16000,
@@ -93,11 +105,7 @@ const melFreqs = (
   return freqs;
 };
 
-export const drawMelAndPitches = (
-  canvas: HTMLCanvasElement,
-  mel: number[][],
-  pitches?: number[]
-): void => {
+export const drawMel = (canvas: HTMLCanvasElement, mel: number[][]): void => {
   const ctx = canvas.getContext("2d");
   const colorMatrix = matrixToColor(mel);
   colorMatrix.reverse(); // Since it's a mel spectrogram, we need to vertically flip the matrix
@@ -129,15 +137,19 @@ export const drawMelAndPitches = (
   }
 
   ctx!.putImageData(imageData, 0, 0);
+};
 
-  // Draw the red pitch line
-  if (!pitches) return;
+export const drawPitches = (
+  canvas: HTMLCanvasElement,
+  pitches: number[]
+): void => {
+  const ctx = canvas.getContext("2d");
+  const cellWidth = canvas.width / pitches.length;
+  const cellHeight = canvas.height / 128;
 
   ctx!.beginPath();
   ctx!.lineWidth = 2;
   ctx!.strokeStyle = "red";
-
-  const _melFreqs = melFreqs(40, 16000, 128);
 
   pitches.forEach((pitch, index) => {
     const x = index * cellWidth;
@@ -151,16 +163,4 @@ export const drawMelAndPitches = (
   });
 
   ctx!.stroke();
-
-  // Draw frequency labels
-  // const labelFreqs = [40, 100, 200, 400, 1000, 2000, 5000, 10000, 16000];
-  // ctx!.font = "12px Arial";
-  // ctx!.textAlign = "right";
-  // ctx!.textBaseline = "middle";
-  // ctx!.fillStyle = "white";
-
-  // labelFreqs.forEach((freq) => {
-  //   const y = canvas.height - fToMel(freq) * cellHeight;
-  //   ctx!.fillText(`${freq} Hz`, 40, y);
-  // });
 };
