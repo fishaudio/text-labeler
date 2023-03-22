@@ -307,15 +307,17 @@ export default function PitchEditor() {
                   </Button>
                 ))}
                 {/* Apply selected region */}
-                {pitches && <Button
-                  sx={{ ml: "16px" }}
-                  variant="outlined"
-                  color="success"
-                  startIcon={<CheckIcon />}
-                  onClick={applySelection}
-                >
-                  Apply
-                </Button>}
+                {pitches && (
+                  <Button
+                    sx={{ ml: "16px" }}
+                    variant="outlined"
+                    color="success"
+                    startIcon={<CheckIcon />}
+                    onClick={applySelection}
+                  >
+                    Apply
+                  </Button>
+                )}
               </ButtonGroup>
 
               <ButtonGroup variant="outlined" color="primary">
