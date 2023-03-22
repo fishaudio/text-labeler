@@ -307,7 +307,7 @@ export default function PitchEditor() {
                   </Button>
                 ))}
                 {/* Apply selected region */}
-                <Button
+                {pitches && <Button
                   sx={{ ml: "16px" }}
                   variant="outlined"
                   color="success"
@@ -315,7 +315,7 @@ export default function PitchEditor() {
                   onClick={applySelection}
                 >
                   Apply
-                </Button>
+                </Button>}
               </ButtonGroup>
 
               <ButtonGroup variant="outlined" color="primary">
