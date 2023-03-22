@@ -141,7 +141,8 @@ export const drawMel = (canvas: HTMLCanvasElement, mel: number[][]): void => {
 
 export const drawPitches = (
   canvas: HTMLCanvasElement,
-  pitches: number[]
+  pitches: number[],
+  color: string = "red"
 ): void => {
   const ctx = canvas.getContext("2d");
   const cellWidth = canvas.width / pitches.length;
@@ -149,7 +150,7 @@ export const drawPitches = (
 
   ctx!.beginPath();
   ctx!.lineWidth = 2;
-  ctx!.strokeStyle = "red";
+  ctx!.strokeStyle = color;
 
   pitches.forEach((pitch, index) => {
     const x = index * cellWidth;
@@ -161,6 +162,39 @@ export const drawPitches = (
       ctx!.lineTo(x, y);
     }
   });
+
+  ctx!.stroke();
+};
+
+export const drawSelectedArea = (
+  canvas: HTMLCanvasElement,
+  // Start and end are in pixels (not in frames)
+  start: number,
+  end: number,
+  // Use gray color by default
+  color: string = "rgba(210, 210, 210, 0.5)"
+): void => {
+  const ctx = canvas.getContext("2d");
+
+  ctx!.beginPath();
+  ctx!.fillStyle = color;
+
+  const x = start;
+  const y = 0;
+  const width = end - start;
+  const height = canvas.height;
+
+  ctx!.fillRect(x, y, width, height);
+
+  // Draw white lines at the left and right of the selected area
+  ctx!.beginPath();
+  ctx!.lineWidth = 2;
+  ctx!.strokeStyle = "white";
+
+  ctx!.moveTo(start, 0);
+  ctx!.lineTo(start, canvas.height);
+  ctx!.moveTo(end, 0);
+  ctx!.lineTo(end, canvas.height);
 
   ctx!.stroke();
 };

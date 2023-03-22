@@ -5,6 +5,7 @@ import FileSelector, { LabeledFile } from "@/components/FileSelector";
 import { useState } from "react";
 import AudioLabeler from "@/components/AudioLabeler";
 import GitHubIcon from "@mui/icons-material/GitHub";
+import Link from "next/link";
 
 const getBase64 = (file: File): Promise<string | ArrayBuffer | null> => {
   return new Promise((resolve, reject) => {
@@ -126,6 +127,7 @@ export default function Home() {
                 <IconButton sx={{ color: "#000" }} onClick={openRepo}>
                   <GitHubIcon />
                 </IconButton>
+                <Link href="/pitch">Pitch Labeler</Link>
               </Header>
             </Grid>
             <Grid xs={12} md={4}>

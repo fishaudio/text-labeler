@@ -77,7 +77,7 @@ const AudioLabeler = ({
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [tempPinYin, autoNext, onSave, onNext]);
+  }, [tempText, tempPinYin, autoNext, onSave, onNext]);
 
   useEffect(() => {
     setAutoNext(getBooleanFromLocalStorage("autoNext", true));
