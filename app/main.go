@@ -3,6 +3,7 @@ package main
 import (
 	"embed"
 	"log"
+	"mime"
 	"net/http"
 	"os/exec"
 	"runtime"
@@ -29,6 +30,9 @@ func open(url string) error {
 }
 
 func main() {
+	_ = mime.AddExtensionType(".js", "text/javascript")
+	_ = mime.AddExtensionType(".css", "text/css")
+
 	// Serve the static files at the root of the server
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		r.URL.Path = "/out" + r.URL.Path
