@@ -93,7 +93,12 @@ const FileSelector = ({
     }
 
     // Sort by name
-    temp.sort((a, b) => a.name.localeCompare(b.name));
+    temp.sort((a, b) =>
+      a.name.localeCompare(b.name, undefined, {
+        numeric: true,
+        sensitivity: "base",
+      })
+    );
 
     setFiles(temp);
     setSelected(temp[0]);
