@@ -10,15 +10,14 @@ import AudioPlayer from "react-h5-audio-player";
 import "react-h5-audio-player/lib/styles.css";
 import PaperWithPadding from "./PaperWithPadding";
 import { useEffect, useState } from "react";
-import pinyin from "pinyin";
 
 type AudioLabelerProps = {
   audio: string;
   text: string;
   pinYin: string;
-  onPrev: (text: string, pinYin: string) => void;
-  onNext: (text: string, pinYin: string) => void;
-  onSave: (text: string, pinYin: string) => void;
+  onPrev: (text: string) => void;
+  onNext: (text: string) => void;
+  onSave: (text: string) => void;
   onDelete: () => void;
 };
 
@@ -38,24 +37,20 @@ const AudioLabeler = ({
   onSave,
   onDelete,
   text,
-  pinYin,
 }: AudioLabelerProps) => {
   const [autoPlay, setAutoPlay] = useState(true);
-  const [autoPinYin, setAutoPinYin] = useState(true);
   const [autoNext, setAutoNext] = useState(true);
   const [tempText, setTempText] = useState(text);
-  const [tempPinYin, setTempPinYin] = useState(pinYin);
 
   useEffect(() => {
     setTempText(text);
-    setTempPinYin(pinYin);
-  }, [text, pinYin]);
+  }, [text]);
 
   useEffect(() => {
     const handleKeyPress = (event: any) => {
-      if (autoNext && event.keyCode === 13 && !!tempPinYin) {
+      if (autoNext && event.keyCode === 13) {
         event.preventDefault();
-        onNext(tempText, tempPinYin);
+        onNext(tempText);
       }
 
       // Ignore Enter
@@ -66,7 +61,7 @@ const AudioLabeler = ({
       // If Command + S is pressed
       if (event.keyCode === 83 && (event.metaKey || event.ctrlKey)) {
         event.preventDefault();
-        onSave(tempText, tempPinYin);
+        onSave(tempText);
       }
     };
 
@@ -77,12 +72,11 @@ const AudioLabeler = ({
     return () => {
       document.removeEventListener("keydown", handleKeyPress);
     };
-  }, [tempText, tempPinYin, autoNext, onSave, onNext]);
+  }, [tempText, autoNext, onSave, onNext]);
 
   useEffect(() => {
     setAutoNext(getBooleanFromLocalStorage("autoNext", true));
     setAutoPlay(getBooleanFromLocalStorage("autoPlay", true));
-    setAutoPinYin(getBooleanFromLocalStorage("autoPinYin", true));
   }, []);
 
   const onUpdateAutoPlay = (e: any) => {
@@ -90,13 +84,6 @@ const AudioLabeler = ({
       localStorage.setItem("autoPlay", e.target.checked);
     }
     setAutoPlay(e.target.checked);
-  };
-
-  const onUpdateAutoPinYin = (e: any) => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("autoPinYin", e.target.checked);
-    }
-    setAutoPinYin(e.target.checked);
   };
 
   const onUpdateAutoNext = (e: any) => {
@@ -109,13 +96,6 @@ const AudioLabeler = ({
   const onUpdateText = (e: any) => {
     setTempText(e.target.value);
 
-    if (autoPinYin) {
-      const pinyinResult = pinyin(e.target.value, {
-        style: pinyin.STYLE_NORMAL,
-      });
-
-      setTempPinYin(pinyinResult.map((item) => item[0]).join(" "));
-    }
   };
 
   const disabled = !audio;
@@ -138,12 +118,6 @@ const AudioLabeler = ({
             disabled={disabled}
           />
           <FormControlLabel
-            control={<Switch checked={autoPinYin} />}
-            label="更新拼音"
-            onChange={onUpdateAutoPinYin}
-            disabled={disabled}
-          />
-          <FormControlLabel
             control={<Switch checked={autoNext} />}
             label="回车自动下一个"
             onChange={onUpdateAutoNext}
@@ -162,16 +136,6 @@ const AudioLabeler = ({
             value={tempText}
             disabled={disabled}
           />
-
-          <TextField
-            label="拼音 (自动转换)"
-            multiline
-            fullWidth
-            rows={4}
-            value={tempPinYin}
-            onChange={(e) => setTempPinYin(e.target.value)}
-            disabled={disabled}
-          />
         </Stack>
       </PaperWithPadding>
       <PaperWithPadding>
@@ -179,21 +143,21 @@ const AudioLabeler = ({
           <Button
             variant="outlined"
             fullWidth
-            onClick={() => onPrev(tempText, tempPinYin)}
+            onClick={() => onPrev(tempText)}
           >
             上一个
           </Button>
           <Button
             variant="outlined"
             fullWidth
-            onClick={() => onNext(tempText, tempPinYin)}
+            onClick={() => onNext(tempText)}
           >
             下一个 {autoNext ? "(Enter)" : ""}
           </Button>
           <Button
             variant="outlined"
             fullWidth
-            onClick={() => onSave(tempText, tempPinYin)}
+            onClick={() => onSave(tempText)}
           >
             保存 (Ctrl + S)
           </Button>
