@@ -14,7 +14,6 @@ import { useEffect, useState } from "react";
 type AudioLabelerProps = {
   audio: string;
   text: string;
-  pinYin: string;
   onPrev: (text: string) => void;
   onNext: (text: string) => void;
   onSave: (text: string) => void;
