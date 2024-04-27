@@ -38,7 +38,9 @@ const FileSelector = ({
     const win = window as any;
 
     if (!win.showDirectoryPicker) {
-      alert("当前浏览器不支持文件夹选择");
+      alert(
+        "当前浏览器不支持文件夹选择 / Current browser does not support folder selection"
+      );
       return;
     }
 
@@ -110,13 +112,13 @@ const FileSelector = ({
     <Stack spacing={2}>
       <PaperWithPadding>
         <Button variant="outlined" fullWidth onClick={onSelectFolder}>
-          选择目录
+          选择目录 / Select a Folder
         </Button>
       </PaperWithPadding>
       <PaperWithPadding sx={{ textAlign: "center" }}>
         {files.length > 0
-          ? `已完成 ${numLabeled} / ${files.length}`
-          : "未选择文件"}
+          ? `已完成 / Done ${numLabeled} / ${files.length}`
+          : "未选择文件 / No document selected"}
 
         <List sx={{ maxHeight: 400, overflow: "auto" }}>
           {files.map((file, index) => (

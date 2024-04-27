@@ -94,7 +94,6 @@ const AudioLabeler = ({
 
   const onUpdateText = (e: any) => {
     setTempText(e.target.value);
-
   };
 
   const disabled = !audio;
@@ -112,13 +111,13 @@ const AudioLabeler = ({
         <FormGroup row>
           <FormControlLabel
             control={<Switch checked={autoPlay} />}
-            label="自动播放"
+            label="自动播放 / Autoplay"
             onChange={onUpdateAutoPlay}
             disabled={disabled}
           />
           <FormControlLabel
             control={<Switch checked={autoNext} />}
-            label="回车自动下一个"
+            label="回车自动下一个 / Enter For Next"
             onChange={onUpdateAutoNext}
             disabled={disabled}
           />
@@ -127,7 +126,7 @@ const AudioLabeler = ({
       <PaperWithPadding>
         <Stack spacing={2}>
           <TextField
-            label="中文"
+            label="标签文本 / Label Text"
             multiline
             fullWidth
             rows={2}
@@ -139,29 +138,17 @@ const AudioLabeler = ({
       </PaperWithPadding>
       <PaperWithPadding>
         <Stack spacing={2} direction="row">
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={() => onPrev(tempText)}
-          >
-            上一个
+          <Button variant="outlined" fullWidth onClick={() => onPrev(tempText)}>
+            上一个 / PREV
           </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={() => onNext(tempText)}
-          >
-            下一个 {autoNext ? "(Enter)" : ""}
+          <Button variant="outlined" fullWidth onClick={() => onNext(tempText)}>
+            下一个 / NEXT {autoNext ? "(Enter)" : ""}
           </Button>
-          <Button
-            variant="outlined"
-            fullWidth
-            onClick={() => onSave(tempText)}
-          >
-            保存 (Ctrl + S)
+          <Button variant="outlined" fullWidth onClick={() => onSave(tempText)}>
+            保存 / SAVE <br /> (Ctrl + S)
           </Button>
           <Button variant="outlined" fullWidth onClick={onDelete} color="error">
-            删除
+            删除 / DELETE
           </Button>
         </Stack>
       </PaperWithPadding>
