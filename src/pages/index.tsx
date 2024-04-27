@@ -38,8 +38,8 @@ export default function Home() {
     setSelected(file);
   };
 
-  const onPrev = async (text: string, pinYin: string) => {
-    await onSave(text, pinYin);
+  const onPrev = async (text: string) => {
+    await onSave(text);
 
     const index = files.findIndex((f) => f.name === selected?.name);
 
@@ -48,8 +48,8 @@ export default function Home() {
     }
   };
 
-  const onNext = async (text: string, pinYin: string) => {
-    await onSave(text, pinYin);
+  const onNext = async (text: string) => {
+    await onSave(text);
 
     const index = files.findIndex((f) => f.name === selected?.name);
 
@@ -58,13 +58,12 @@ export default function Home() {
     }
   };
 
-  const onSave = async (text: string, pinYin: string) => {
+  const onSave = async (text: string) => {
     if (!selected) {
       return;
     }
 
     selected.text = text;
-    selected.pinYin = pinYin;
     selected.labeled = true;
 
     const fileHandle: any = await selected.directoryHandle.getFileHandle(
@@ -72,7 +71,7 @@ export default function Home() {
       { create: true }
     );
     const writable = await fileHandle.createWritable();
-    await writable.write(`${text}\n${pinYin}`);
+    await writable.write(`${text}`);
     await writable.close();
 
     setFiles([...files]);
@@ -127,7 +126,6 @@ export default function Home() {
                 <IconButton sx={{ color: "#000" }} onClick={openRepo}>
                   <GitHubIcon />
                 </IconButton>
-                <Link href="/pitch">Pitch Labeler</Link>
               </Header>
             </Grid>
             <Grid xs={12} md={4}>
@@ -142,7 +140,6 @@ export default function Home() {
               <AudioLabeler
                 audio={audio}
                 text={selected?.text || ""}
-                pinYin={selected?.pinYin || ""}
                 onPrev={onPrev}
                 onNext={onNext}
                 onSave={onSave}
