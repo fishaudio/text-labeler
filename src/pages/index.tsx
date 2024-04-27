@@ -99,8 +99,8 @@ export default function Home() {
         onSelectedAudio(files[index]);
       }
     } catch (e) {
-      console.error("删除失败", e);
-      alert("删除失败");
+      console.error("删除失败 / Failed to delete", e);
+      alert("删除失败 / Failed to delete");
       return;
     }
   };
