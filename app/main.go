@@ -9,7 +9,7 @@ import (
 	"runtime"
 )
 
-//go:embed out/*
+//go:embed all:out/*
 var out embed.FS
 
 func open(url string) error {
