@@ -19,6 +19,7 @@
     "@types/node": "18.11.18",
     "@types/react": "18.0.27",
     "@types/react-dom": "^18.0.10",
+    "@wavesurfer/react": "^1.0.7",
     "colormap": "^2.3.2",
     "eslint": "8.32.0",
     "eslint-config-next": "13.1.5",
@@ -27,7 +28,8 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-h5-audio-player": "^3.8.6",
-    "typescript": "4.9.4"
+    "typescript": "4.9.4",
+    "wavesurfer.js": "^7.8.4"
   },
   "devDependencies": {
     "@types/colormap": "^2.3.1",
